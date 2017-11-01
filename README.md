@@ -1,9 +1,9 @@
 scATAC-seq index designer
 ============================================================
-Time-stamp: "2017-11-01 11:20:56"
+Time-stamp: "2017-11-01 11:30:50"
 
 # Two round barcoding multiplex
-
+![Barcode usage](./barcode_multiplex.png)
 
 # Requirements for a barcodes design
 
