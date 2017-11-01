@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 # scATAC_index_designer -l 8 -d 4 -o i7.4mm.txt -gmax 0.625 -gmin 0.375  -n 3
-# Time-stamp: "2017-11-01 11:50:19"
-
+# Time-stamp: "2017-11-01 14:47:01"
+# python: 2.7 + 
 
 import sys
 import os
@@ -12,6 +12,8 @@ from operator import itemgetter
 from collections import Counter
 from itertools import groupby
 import copy
+from collections import OrderedDict
+
 
 def min_dist(s, sl):
     """ return the string with min edit distance """
@@ -116,14 +118,24 @@ def main():
     if not isinstance(barcode_repeat, int): exit('error: -r must be an integer')
     
     sed_list = [i.strip() for i in open(fsed_name, "r")] if fsed_name != None else [] 
-    barcodes = {}
+    barcodes = OrderedDict()
     for elem in sed_list: barcodes[elem] = (cal_gc(elem), cal_max_consecutive(elem))    
     num_track = len(barcodes.keys())
+
+    print("seed barcode list contains %d indexes"%num_track)
+    for key,val in barcodes.iteritems():
+        if(val[0]<barcode_gc_min or val[0]>barcode_gc_max or val[1]> barcode_repeat):
+            print("removed index %s ( %s GC, %d repeats)"%(key,val[0],val[1]))
+            del barcodes[key]
+
+    num_track = len(barcodes.keys())
+    print(" %d indexes remain"%num_track)
     
     iter_num = -1
     while True:
         iter_num += 1
         print("iteration %d: %d barcodes have been found ..." % (iter_num, num_track))
+
         bases=['A','T','G','C']
         barcodes_list = [''.join(x) for x in itertools.product(bases, repeat=barcode_len)]
         shuffle(barcodes_list)
