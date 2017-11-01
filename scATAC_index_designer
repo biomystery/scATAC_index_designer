@@ -1,6 +1,8 @@
 #!/usr/bin/env python2
 # scATAC_index_designer -l 8 -d 4 -o i7.4mm.txt -gmax 0.625 -gmin 0.375  -n 3
- 
+# Time-stamp: "2017-11-01 11:50:19"
+
+
 import sys
 import os
 import optparse
@@ -43,12 +45,12 @@ def main():
                       help='min pair-wise distance between two generated barcodes.'
                       )
 
-    parser.add_option('-gmax',
+    parser.add_option('-a','--gmax',
                       dest="GC_MAX", 
                       type=float,
                       help='max gc content.'
                       )
-    parser.add_option('-gmin',
+    parser.add_option('-i','--gmin',
                       dest="GC_MIN", 
                       type=float,
                       help='min gc content.'
