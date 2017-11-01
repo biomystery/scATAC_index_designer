@@ -1,9 +1,9 @@
 scATAC-seq index designer
 ============================================================
-Time-stamp: "2017-11-01 11:30:50"
+Time-stamp: "2017-11-01 11:34:20"
 
 # Two round barcoding multiplex
-![Barcode usage](./barcode_multiplex.png)
+![Barcode usage](./barcode_multiplex.png) From [An Introduction to Next-Generation Sequencing Technology](https://www.illumina.com/content/dam/illumina-marketing/documents/products/illumina_sequencing_introduction.pdf) by Illumina
 
 # Requirements for a barcodes design
 
