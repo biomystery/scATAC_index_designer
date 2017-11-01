@@ -1,6 +1,6 @@
 scATAC-seq index designer
 ============================================================
-Time-stamp: "2017-11-01 11:55:11"
+Time-stamp: "2017-11-01 11:56:31"
 
 # Two round barcoding multiplex
 ![Barcode usage](./barcode_multiplex.png) From [An Introduction to Next-Generation Sequencing Technology](https://www.illumina.com/content/dam/illumina-marketing/documents/products/illumina_sequencing_introduction.pdf) by Illumina. 
@@ -21,21 +21,23 @@ $chmod u+x scATAC_index_designer
 $scATAC_index_designer -h
 ```
 
-> Usage: scATAC_index_designer [-h] [-l LEN] [-d DIST] [-o FNAME] [-gmax GC_MAX] [-gmin GC_MIN] [-n NUM_REPEAT] [-s SED]
-> 
-> Barcode Design for scATAC.
-> 
-> Options:
->   -h, --help            show this help message and exit
->   -l LEN                barcode length [8].
->   -d DIST               min pair-wise distance between two generated barcodes.
->   -a GC_MAX, --gmax=GC_MAX
->                         max gc content.
->   -i GC_MIN, --gmin=GC_MIN
->                         min gc content.
->   -n NUM_REPEAT         max repeat letters allowed.
->   -s SED                sed barcodes to start with.
->   -o FNAME              output file.
+``` Shell
+ Usage: scATAC_index_designer [-h] [-l LEN] [-d DIST] [-o FNAME] [-gmax GC_MAX] [-gmin GC_MIN] [-n NUM_REPEAT] [-s SED]
+ 
+ Barcode Design for scATAC.
+ 
+ Options:
+   -h, --help            show this help message and exit
+   -l LEN                barcode length [8].
+   -d DIST               min pair-wise distance between two generated barcodes.
+   -a GC_MAX, --gmax=GC_MAX
+                         max gc content.
+   -i GC_MIN, --gmin=GC_MIN
+                         min gc content.
+   -n NUM_REPEAT         max repeat letters allowed.
+   -s SED                sed barcodes to start with.
+   -o FNAME              output file.
+```
 
 ``` Shell
 $scATAC_index_designer -l 8 -d 4 -o i7.4mm.txt --gmax 0.625 --gmin 0.375  -n 3
