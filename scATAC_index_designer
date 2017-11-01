@@ -71,27 +71,30 @@ def main():
     options, remainder = parser.parse_args()
     
     
-    barocde_len = 8  
-    barocde_gc = 0.5 
-    barocde_repeat = 3 
+    barcode_len = 8  
+    barcode_gc_max, barcode_gc_min = 0.625, 0.375
+    barcode_repeat = 3 
      
     if options.LEN:
-        barocde_len = options.LEN
+        barcode_len = options.LEN
     else: 
         parser.print_help()
         exit('error: too few arguments;')
 
     if options.DIST:
-        barocde_dist = options.DIST
+        barcode_dist = options.DIST
     else:
         parser.print_help()
         exit('error: too few arguments;')
 
-    if options.GC:
-        barocde_gc = options.GC
+    if options.GC_MAX:
+        barcode_gc_max = options.GC_MAX
+
+    if options.GC_MIN:
+        barcode_gc_min = options.GC_MIN
 
     if options.NUM_REPEAT:
-        barocde_repeat = options.NUM_REPEAT
+        barcode_repeat = options.NUM_REPEAT
 
     if options.SED: 
         fsed_name = options.SED
@@ -104,10 +107,11 @@ def main():
         parser.print_help()
         exit('error: too few arguments;')
     
-    if not isinstance(barocde_len,  int):  exit('error: -l must be an integer')
-    if not isinstance(barocde_dist, int): exit('error: -d must be an integer')
-    if not isinstance(barocde_gc,  float): exit('error: -g must be an integer')
-    if not isinstance(barocde_repeat, int): exit('error: -r must be an integer')
+    if not isinstance(barcode_len,  int):  exit('error: -l must be an integer')
+    if not isinstance(barcode_dist, int): exit('error: -d must be an integer')
+    if not isinstance(barcode_gc_max,  float): exit('error: -gmax must be a float')
+    if not isinstance(barcode_gc_min,  float): exit('error: -gmin must be a float')    
+    if not isinstance(barcode_repeat, int): exit('error: -r must be an integer')
     
     sed_list = [i.strip() for i in open(fsed_name, "r")] if fsed_name != None else [] 
     barcodes = {}
@@ -119,13 +123,14 @@ def main():
         iter_num += 1
         print("iteration %d: %d barcodes have been found ..." % (iter_num, num_track))
         bases=['A','T','G','C']
-        barcodes_list = [''.join(x) for x in itertools.product(bases, repeat=barocde_len)]
+        barcodes_list = [''.join(x) for x in itertools.product(bases, repeat=barcode_len)]
         shuffle(barcodes_list)
         for elem in barcodes_list:
             (s, d) = min_dist(elem, barcodes.keys())
-            if d >= barocde_dist: 
-                if(cal_gc(elem) <= barocde_gc and cal_max_consecutive(elem) <= barocde_repeat):
-                    barcodes[elem] = (cal_gc(elem), cal_max_consecutive(elem))        
+            if d >= barcode_dist:
+                barcode_gc_, barcode_repeat_ = cal_gc(elem), cal_max_consecutive(elem)
+                if(barcode_gc_ <= barcode_gc_max and barcode_gc_ >= barcode_gc_min and barcode_repeat_ <= barcode_repeat):
+                    barcodes[elem] = (barcode_gc_, barcode_repeat_)        
         if num_track == len(barcodes.keys()):
             break
         else:
