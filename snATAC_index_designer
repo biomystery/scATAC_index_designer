@@ -35,7 +35,7 @@ def cal_max_consecutive(s):
 
 def main():
     parser = optparse.OptionParser(description='Barcode Design for scATAC.', 
-                                   usage='%prog [-h] [-l LEN] [-d DIST] [-o FNAME] [-gmax GC_MAX] [-gmin GC_MIN] [-n NUM_REPEAT] [-s SED]')
+                                   usage='%prog [-h] [-l LEN] [-d DIST] [-o FNAME] [-gmax GC_MAX] [-gmin GC_MIN] [-n NUM_REPEAT] [-s SED] [-N NUM_TARGET]')
     parser.add_option('-l',
                       dest="LEN",
                       type=int,
