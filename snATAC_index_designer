@@ -107,6 +107,8 @@ def main():
 
     if options.NUM_TARGET:
         barcode_num = options.NUM_TARGET
+    else:
+        barcode_num = None
 
     if options.SED: 
         fsed_name = options.SED
@@ -154,18 +156,23 @@ def main():
                 barcode_gc_, barcode_repeat_ = cal_gc(elem), cal_max_consecutive(elem)
                 if(barcode_gc_ <= barcode_gc_max and barcode_gc_ >= barcode_gc_min and barcode_repeat_ <= barcode_repeat):
                     barcodes[elem] = (barcode_gc_, barcode_repeat_)
-            if count >= barcode_num:
-                break
-            count += 1
-            
+
+            if barcode_num != None:
+                count += 1
+                if count >= barcode_num:
+                    break    
                
         print("%d : %d\n" % (len(barcodes.keys()), num_track))
-        num_track = len(barcodes.keys())
         
-        if num_track >= barcode_num:
-            break
-        #else:
-            #num_track = len(barcodes.keys())
+        if barcode_num != None:
+            num_track = len(barcodes.keys())
+            if num_track >= barcode_num:
+                break
+        else:
+            if num_track == len(barcodes.keys()):
+                break
+            else:
+                num_track = len(barcodes.keys())
 
     with open(fout_name, "w") as fout:
         for key in barcodes:
