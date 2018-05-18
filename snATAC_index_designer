@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 # scATAC_index_designer -l 8 -d 4 -o i7.4mm.txt -gmax 0.625 -gmin 0.375  -n 3
-# Time-stamp: "2018-05-02 16:31:07"
+# Time-stamp: "2017-11-01 14:47:01"
 # python: 2.7 + 
 
 import sys
@@ -13,7 +13,7 @@ from collections import Counter
 from itertools import groupby
 import copy
 from collections import OrderedDict
-
+import time
 
 def min_dist(s, sl):
     """ return the string with min edit distance """
@@ -35,7 +35,7 @@ def cal_max_consecutive(s):
 
 def main():
     parser = optparse.OptionParser(description='Barcode Design for scATAC.', 
-                                   usage='%prog [-h] [-l LEN] [-d DIST] [-o FNAME] [-gmax GC_MAX] [-gmin GC_MIN] [-n NUM_REPEAT] [-s SED]')
+                                   usage='%prog [-h] [-l LEN] [-d DIST] [-o FNAME] [-gmax GC_MAX] [-gmin GC_MIN] [-n NUM_REPEAT] [-s SED] [-N NUM_TARGET]')
     parser.add_option('-l',
                       dest="LEN",
                       type=int,
@@ -66,11 +66,16 @@ def main():
     parser.add_option('-s',
                       dest="SED", 
                       help='sed barcodes to start with.'
-                      )
+    )
 
     parser.add_option('-o',
                       dest="FNAME", 
                       help='output file.')
+
+    parser.add_option('-N',
+                      dest="NUM_TARGET",
+                      type=int,
+                      help='target number of barcodes.If specified, iterations will be terminated when number of unique barcodes reaches to N.')
     
     options, remainder = parser.parse_args()
     
@@ -99,6 +104,11 @@ def main():
 
     if options.NUM_REPEAT:
         barcode_repeat = options.NUM_REPEAT
+
+    if options.NUM_TARGET:
+        barcode_num = options.NUM_TARGET
+    else:
+        barcode_num = None
 
     if options.SED: 
         fsed_name = options.SED
@@ -138,24 +148,38 @@ def main():
 
         bases=['A','T','G','C']
         barcodes_list = [''.join(x) for x in itertools.product(bases, repeat=barcode_len)]
-        shuffle(barcodes_list) # randomly select first barcode in the list as a seed (if no input barcodes)
+	shuffle(barcodes_list)
+        count = 0
         for elem in barcodes_list:
             (s, d) = min_dist(elem, barcodes.keys())
             if d >= barcode_dist:
                 barcode_gc_, barcode_repeat_ = cal_gc(elem), cal_max_consecutive(elem)
                 if(barcode_gc_ <= barcode_gc_max and barcode_gc_ >= barcode_gc_min and barcode_repeat_ <= barcode_repeat):
-                    barcodes[elem] = (barcode_gc_, barcode_repeat_)        
-        if num_track == len(barcodes.keys()):
-            break
-        else:
+                    barcodes[elem] = (barcode_gc_, barcode_repeat_)
+
+            if barcode_num != None:
+                count += 1
+                if count >= barcode_num:
+                    break    
+               
+        print("%d : %d\n" % (len(barcodes.keys()), num_track))
+        
+        if barcode_num != None:
             num_track = len(barcodes.keys())
-            
+            if num_track >= barcode_num:
+                break
+        else:
+            if num_track == len(barcodes.keys()):
+                break
+            else:
+                num_track = len(barcodes.keys())
+
     with open(fout_name, "w") as fout:
         for key in barcodes:
             fout.write(key+'\n')
     print("Finished! %d unique qualified barcodes have been found" % (len(barcodes.keys())))
         
     
-if __name__ == '__main__':
+if __name__ == '__main__':    
     main()
     
